@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Job.Services.Services
 {
-    public interface IJobManager
+    public interface IRubricManager
     {
         Task UpdateRubrics();
     }

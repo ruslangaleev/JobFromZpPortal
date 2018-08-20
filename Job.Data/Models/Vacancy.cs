@@ -6,6 +6,8 @@ namespace Job.Data.Models
 {
     public class Vacancy
     {
-        public DateTime UpdateAt { get; set; }
+        //public DateTime UpdateAt { get; set; }
+
+        public Guid VersionId { get; set; }
     }
 }

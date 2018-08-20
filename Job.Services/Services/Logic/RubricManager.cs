@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Job.Services.Services.Logic
 {
-    public class JobManager : IJobManager
+    public class RubricManager : IRubricManager
     {
         private readonly IRubricRepository _rubricRepository;
         private readonly IZpClient _zpClient;
 
-        public JobManager(IRubricRepository rubricRepository, IZpClient zpClient)
+        public RubricManager(IRubricRepository rubricRepository, IZpClient zpClient)
         {
             _rubricRepository = rubricRepository ?? throw new ArgumentNullException(nameof(rubricRepository));
             _zpClient = zpClient ?? throw new ArgumentNullException(nameof(zpClient));

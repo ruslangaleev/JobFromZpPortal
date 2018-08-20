@@ -45,17 +45,13 @@ namespace Job.Tests
 
             var zpClientMock = new Mock<IZpClient>();
             zpClientMock.Setup(t => t.GetRubrics()).ReturnsAsync(expectedRubrics);
-            var jobManager = new JobManager(rubricRepoMock.Object, zpClientMock.Object);
+            var jobManager = new RubricManager(rubricRepoMock.Object, zpClientMock.Object);
 
             // Действие
             await jobManager.UpdateRubrics();
 
             // Проверка
             Assert.AreEqual(expectedRubrics.Count, actualRubrics.Count);
-        }
-
-        public async Task ReturnsNewVacancies()
-        {
         }
     }
 }
