@@ -28,7 +28,7 @@ namespace Job.Services.Clients.Logic
 
         public async Task<VacancyInfo> GetVacancies(int limit = 100, int offset = 0)
         {
-            var uri = "";
+            var uri = $"vacancies?limit={limit}&offset={offset}";
             var response = await _client.GetAsync(uri);
             if (response.IsSuccessStatusCode)
             {
@@ -36,10 +36,7 @@ namespace Job.Services.Clients.Logic
                 return JsonConvert.DeserializeObject<VacancyInfo>(json);
             }
 
-            return new VacancyInfo
-            {
-                ErrorMessage = $"Statuc: {response.StatusCode}, Body: {await response.Content.ReadAsStringAsync()}"
-            };
+            return null;
         }
     }
 }

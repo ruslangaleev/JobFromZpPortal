@@ -62,13 +62,25 @@ namespace Job.Services.Services.Logic
                 var vacancyInfo = await _zpClient.GetVacancies(offset: offset);
                 if (versionInfo.Count == 0)
                 {
-                    versionInfo.Count = vacancyInfo.Count;
+                    versionInfo.Count = vacancyInfo.Metadata.ResultSet.Count;
                     // SaveChange
                 }
 
-                vacancyInfo.Vacancies.ToList().ForEach(t => t.VersionId = versionInfo.VersionInfoId);
+                var vacancies = new List<Vacancy>();
+                foreach(var entry in vacancyInfo.Vacancies)
+                {
+                    vacancies.Add(new Vacancy
+                    {
+                        Salary = entry.Salary,
+                        VersionId = versionInfo.VersionInfoId,
+                        Description = entry.Description,
+                        Header = entry.Header,
+                        PositionTitle = entry.Header,
+                        Url = entry.CanonicalUrl
+                    });
+                }
 
-                await _vacancyRepository.AddRange(vacancyInfo.Vacancies);
+                await _vacancyRepository.AddRange(vacancies);
 
                 offset += 100;
                 versionInfo.CountDownloded += 100;
