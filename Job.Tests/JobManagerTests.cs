@@ -24,19 +24,27 @@ namespace Job.Tests
                 new Rubric(),
                 new Rubric()
             };
-            var actualRubrics = new List<Rubric>();
+            var actualRubrics = new List<Rubric>
+            {
+                new Rubric(),
+                new Rubric()
+            };
 
             var rubricRepoMock = new Mock<IRubricRepository>();
             rubricRepoMock.Setup(t => t.AddRange(It.IsAny<IEnumerable<Rubric>>())).Callback((IEnumerable<Rubric> param) =>
             {
-                actualRubrics = param.ToList();
+                actualRubrics.AddRange(param.ToList());
             }).Returns(Task.FromResult(1));
-            var zpClientMock = new Mock<IZpClient>();
-            zpClientMock.Setup(t => t.GetRubrics()).ReturnsAsync(new List<Rubric>
+
+            rubricRepoMock.Setup(t => t.RemoveRange(It.IsAny<IEnumerable<Rubric>>())).Callback((IEnumerable<Rubric> param) =>
             {
-                new Rubric(),
-                new Rubric()
-            });
+                actualRubrics.RemoveRange(0, param.Count());
+            }).Returns(Task.FromResult(1));
+
+            rubricRepoMock.Setup(t => t.Get()).ReturnsAsync(actualRubrics);
+
+            var zpClientMock = new Mock<IZpClient>();
+            zpClientMock.Setup(t => t.GetRubrics()).ReturnsAsync(expectedRubrics);
             var jobManager = new JobManager(rubricRepoMock.Object, zpClientMock.Object);
 
             // Действие
@@ -46,10 +54,8 @@ namespace Job.Tests
             Assert.AreEqual(expectedRubrics.Count, actualRubrics.Count);
         }
 
-        // Удалит старые вакансии и добавит новые
-        public void ReturnsNewVacancies()
+        public async Task ReturnsNewVacancies()
         {
-
         }
     }
 }

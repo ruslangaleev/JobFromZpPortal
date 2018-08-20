@@ -20,8 +20,16 @@ namespace Job.Services.Services.Logic
 
         public async Task UpdateRubrics()
         {
-            var rubrics = await _zpClient.GetRubrics();
-            await _rubricRepository.AddRange(rubrics);
+            var rubrics = await _rubricRepository.Get();
+            if (rubrics == null)
+            {
+                rubrics = await _zpClient.GetRubrics();
+                await _rubricRepository.AddRange(rubrics);
+            }
+
+            var newRubrics = await _zpClient.GetRubrics();
+            await _rubricRepository.RemoveRange(rubrics);
+            await _rubricRepository.AddRange(newRubrics);
         }
     }
 }

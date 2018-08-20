@@ -8,6 +8,10 @@ namespace Job.Data.Repositories.Interfaces
 {
     public interface IRubricRepository
     {
+        Task<IEnumerable<Rubric>> Get();
+
         Task AddRange(IEnumerable<Rubric> rubrics);
+
+        Task RemoveRange(IEnumerable<Rubric> rubrics);
     }
 }

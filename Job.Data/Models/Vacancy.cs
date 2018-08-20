@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Job.Data.Models
 {
-    public class Rubric
+    public class Vacancy
     {
-        public Guid RubricId { get; set; }
+        public DateTime UpdateAt { get; set; }
     }
 }
