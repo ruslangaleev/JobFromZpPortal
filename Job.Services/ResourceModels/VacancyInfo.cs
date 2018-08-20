@@ -9,6 +9,8 @@ namespace Job.Services.ResourceModels
     {
         public int Count { get; set; }
 
+        public string ErrorMessage { get; set; }
+
         public IEnumerable<Vacancy> Vacancies { get; set; }
     }
 }
