@@ -5,7 +5,6 @@ using Job.Services.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Job.Services.Services.Logic
@@ -23,14 +22,26 @@ namespace Job.Services.Services.Logic
             _versionRepository = versionRepository ?? throw new ArgumentNullException(nameof(versionRepository));
         }
 
+        public async Task<IEnumerable<Vacancy>> GetVacancies()
+        {
+            return await _vacancyRepository.Get();
+        }
+
+        public async Task<IEnumerable<Vacancy>> GetVacancies(Guid rubricId)
+        {
+            return await _vacancyRepository.Get(rubricId);
+        }
+
         public async Task UpdateVacancies()
         {
+            // Проверяем последнюю версию обновлений
             var currentVersionInfo = await _versionRepository.GetLast(DataType.Vacancy);
             if (currentVersionInfo != null)
             {
                 // Если в предыдущей версии не все вакансии были закачены
                 if (!currentVersionInfo.IsDownloaded)
                 {
+                    // Удаляем все и заводим новую версию
                     await _vacancyRepository.Remove(currentVersionInfo.VersionInfoId);
                     await _versionRepository.Remove(currentVersionInfo);
                 }

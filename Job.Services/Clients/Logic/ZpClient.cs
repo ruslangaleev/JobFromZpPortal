@@ -38,8 +38,8 @@ namespace Job.Services.Clients.Logic
 
             return new VacancyInfo
             {
-                ErrorMessage = $"Statuc: {response.StatusCode}, Body: {await response.Content.ReadAsStringAsync()}";
-            }
+                ErrorMessage = $"Statuc: {response.StatusCode}, Body: {await response.Content.ReadAsStringAsync()}"
+            };
         }
     }
 }

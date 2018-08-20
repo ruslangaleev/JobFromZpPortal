@@ -7,6 +7,8 @@ namespace Job.Data.Repositories.Interfaces
 {
     public interface IVacancyRepository
     {
+        Task<IEnumerable<Vacancy>> Get(Guid rubricId);
+
         Task<IEnumerable<Vacancy>> Get();
 
         Task AddRange(IEnumerable<Vacancy> vacancies);

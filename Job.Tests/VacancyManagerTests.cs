@@ -19,12 +19,14 @@ namespace Job.Tests
         [Test]
         public async Task ReturnsNewVacancies()
         {
-            int count = 3;
+            var count = 1356;
 
-            var expectedVacancies = new List<Vacancy>
+            var expectedVacancies = new List<Vacancy>();
+            for(int i = 0; i < 100; i++)
             {
-                new Vacancy(), new Vacancy()
-            };
+                expectedVacancies.Add(new Vacancy());
+            }
+
             var actualVacancies = new List<Vacancy>();
 
             var vacancyRepoMock = new Mock<IVacancyRepository>();
@@ -42,7 +44,7 @@ namespace Job.Tests
             var zpClientMock = new Mock<IZpClient>();
             zpClientMock.Setup(t => t.GetVacancies(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(new VacancyInfo
             {
-                Count = 100 * count,
+                Count = (int)(100 * count),
                 Vacancies = expectedVacancies
             });
 
@@ -55,12 +57,14 @@ namespace Job.Tests
         [Test]
         public async Task ReturnsNewVacanciesInsteadOldVacancies()
         {
-            int count = 3;
+            int count = 1356;
 
-            var expectedVacancies = new List<Vacancy>
+            var expectedVacancies = new List<Vacancy>();
+            for (int i = 0; i < 100; i++)
             {
-                new Vacancy(), new Vacancy()
-            };
+                expectedVacancies.Add(new Vacancy());
+            }
+
             var actualVacancies = new List<Vacancy>
             {
                 new Vacancy(), new Vacancy()
