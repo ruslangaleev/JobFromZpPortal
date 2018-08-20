@@ -14,7 +14,7 @@ namespace Job.Data.Repositories.Interfaces
 
         Task Add(VersionInfo versionInfo);
 
-        Task Remove(VersionInfo versionInfo);
+        void Remove(VersionInfo versionInfo);
 
         Task Update(VersionInfo versionInfo);
     }

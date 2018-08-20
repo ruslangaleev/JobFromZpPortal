@@ -7,6 +7,8 @@ namespace Job.Data.Models
 {
     public class Vacancy
     {
+        public Guid VacancyId { get; set; }
+
         public Guid VersionId { get; set; }
         
         public string Salary { get; set; }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Job.Data;
 using Job.Data.Repositories.Interfaces;
 using Job.Data.Repositories.Logic;
 using Job.Services.Clients.Interfaces;
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,10 +34,27 @@ namespace Job
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbConnectionString = Configuration["DbConnectionString"] ?? Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddEntityFrameworkNpgsql()
+                .AddDbContext<DatabaseContext>(options =>
+                {
+                    options.UseNpgsql(dbConnectionString,
+                                    sqlOptions =>
+                    {
+                        sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorCodesToAdd: null);
+                    });
+                }, ServiceLifetime.Scoped);
+
             services.AddScoped<IVacancyManager, VacancyManager>();
             services.AddScoped<IVacancyRepository, VacancyRepository>();
             services.AddScoped<IZpClient, ZpClient>();
             services.AddScoped<IVersionRepository, VersionRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

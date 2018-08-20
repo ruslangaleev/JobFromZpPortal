@@ -18,7 +18,10 @@ namespace Job.Services.Clients.Logic
         public ZpClient(IConfiguration configuration)
         {
             var baseUri = configuration["BaseUriZp"];
-            _client.BaseAddress = new Uri(baseUri);
+            if (_client.BaseAddress == null)
+            {
+                _client.BaseAddress = new Uri(baseUri);
+            }
         }
 
         public Task<IEnumerable<Rubric>> GetRubrics()
@@ -28,13 +31,15 @@ namespace Job.Services.Clients.Logic
 
         public async Task<VacancyInfo> GetVacancies(int limit = 100, int offset = 0)
         {
-            var uri = $"vacancies?limit={limit}&offset={offset}";
+            var uri = $"/v1/vacancies?limit={limit}&offset={offset}";
             var response = await _client.GetAsync(uri);
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<VacancyInfo>(json);
             }
+
+            var test = await response.Content.ReadAsStringAsync();
 
             return null;
         }

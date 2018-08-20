@@ -1,4 +1,5 @@
-﻿using Job.Data.Models;
+﻿using Job.Data;
+using Job.Data.Models;
 using Job.Data.Repositories.Interfaces;
 using Job.Services.Clients.Interfaces;
 using Job.Services.Services.Interfaces;
@@ -14,12 +15,14 @@ namespace Job.Services.Services.Logic
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IZpClient _zpClient;
         private readonly IVersionRepository _versionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public VacancyManager(IVacancyRepository vacancyRepository, IVersionRepository versionRepository, IZpClient zpClient)
+        public VacancyManager(IUnitOfWork unitOfWork, IVacancyRepository vacancyRepository, IVersionRepository versionRepository, IZpClient zpClient)
         {
             _vacancyRepository = vacancyRepository ?? throw new ArgumentNullException(nameof(vacancyRepository));
             _zpClient = zpClient ?? throw new ArgumentNullException(nameof(zpClient));
             _versionRepository = versionRepository ?? throw new ArgumentNullException(nameof(versionRepository));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<IEnumerable<Vacancy>> GetVacancies()
@@ -43,7 +46,8 @@ namespace Job.Services.Services.Logic
                 {
                     // Удаляем все и заводим новую версию
                     await _vacancyRepository.Remove(currentVersionInfo.VersionInfoId);
-                    await _versionRepository.Remove(currentVersionInfo);
+                    _versionRepository.Remove(currentVersionInfo);
+                    await _unitOfWork.SaveChangesAsync();
                 }
             }
 
@@ -64,6 +68,7 @@ namespace Job.Services.Services.Logic
                 {
                     versionInfo.Count = vacancyInfo.Metadata.ResultSet.Count;
                     // SaveChange
+                    await _unitOfWork.SaveChangesAsync();
                 }
 
                 var vacancies = new List<Vacancy>();
@@ -81,10 +86,11 @@ namespace Job.Services.Services.Logic
                 }
 
                 await _vacancyRepository.AddRange(vacancies);
-
+                
                 offset += 100;
                 versionInfo.CountDownloded += 100;
                 // SaveChange
+                await _unitOfWork.SaveChangesAsync();
             }
             while (versionInfo.Count > offset);
 
@@ -95,7 +101,7 @@ namespace Job.Services.Services.Logic
                 if (currentVersionInfo.IsDownloaded)
                 {
                     await _vacancyRepository.Remove(currentVersionInfo.VersionInfoId);
-                    await _versionRepository.Remove(currentVersionInfo);
+                    _versionRepository.Remove(currentVersionInfo);
                     currentVersionInfo.IsRemoved = true;
                     await _versionRepository.Update(currentVersionInfo);
                 }

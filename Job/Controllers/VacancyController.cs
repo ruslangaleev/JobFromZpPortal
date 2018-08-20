@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Job.Data.Models;
 using Job.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Job.Controllers
 {
@@ -11,7 +12,12 @@ namespace Job.Controllers
     [ApiController]
     public class VacancyController : ControllerBase
     {
-        private readonly IVacancyManager _vacancyManager;
+        private IVacancyManager _vacancyManager;
+
+        /// <summary>
+        /// Провайдер для получения зависимостей.
+        /// </summary>
+        private readonly IServiceProvider _serviceProvider;
 
         public VacancyController(IVacancyManager vacancyManager)
         {
@@ -32,9 +38,11 @@ namespace Job.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task Post()
+        public async Task<IActionResult> Post()
         {
             await _vacancyManager.UpdateVacancies();
+
+            return Ok("Выполняется обновление вакансий");
         }
     }
 }

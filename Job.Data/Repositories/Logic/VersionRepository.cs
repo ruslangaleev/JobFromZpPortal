@@ -1,5 +1,6 @@
 ﻿using Job.Data.Models;
 using Job.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,10 +10,18 @@ namespace Job.Data.Repositories.Logic
 {
     public class VersionRepository : IVersionRepository
     {
-        public Task Add(VersionInfo versionInfo)
+        private readonly DbSet<VersionInfo> _versions;
+        private readonly DatabaseContext _databaseContext;
+
+        public VersionRepository(DatabaseContext databaseContext)
         {
-            return null;
-            throw new NotImplementedException();
+            _databaseContext = databaseContext;
+            _versions = databaseContext.Set<VersionInfo>();
+        }
+
+        public async Task Add(VersionInfo versionInfo)
+        {
+            await _versions.AddAsync(versionInfo);
         }
 
         public Task<IEnumerable<VersionInfo>> Get()
@@ -21,16 +30,14 @@ namespace Job.Data.Repositories.Logic
             throw new NotImplementedException();
         }
 
-        public Task<VersionInfo> GetLast(DataType dataType)
+        public async Task<VersionInfo> GetLast(DataType dataType)
         {
-            return null;
-            throw new NotImplementedException();
+            return await _versions.LastOrDefaultAsync(t => t.DataType == dataType);
         }
 
-        public Task Remove(VersionInfo versionInfo)
+        public void Remove(VersionInfo versionInfo)
         {
-            return null;
-            throw new NotImplementedException();
+            _versions.Remove(versionInfo);
         }
 
         public Task Update(VersionInfo versionInfo)
