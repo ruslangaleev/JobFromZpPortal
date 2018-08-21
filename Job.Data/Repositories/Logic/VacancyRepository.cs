@@ -25,9 +25,13 @@ namespace Job.Data.Repositories.Logic
             await _vacancies.AddRangeAsync(vacancies);
         }
 
-        public async Task<IEnumerable<Vacancy>> Get(int limit = 25, int offset = 0)
+        public async Task<IEnumerable<Vacancy>> GetVacancies(Guid versionInfoId, int limit = 25, int offset = 0)
         {
-            return await _vacancies.Skip(offset * limit).Take(limit).ToListAsync();
+            return await _vacancies
+                .Where(t => t.VersionId == versionInfoId)
+                .Skip(offset * limit)
+                .Take(limit)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Vacancy>> Get(Guid rubricId)

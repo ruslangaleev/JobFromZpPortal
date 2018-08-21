@@ -10,7 +10,14 @@ namespace Job.Data.Repositories.Interfaces
     {
         Task<IEnumerable<VersionInfo>> Get();
 
-        Task<VersionInfo> GetLast(DataType dataType);
+        /// <summary>
+        /// Возвращает последнюю версию обновлений.
+        /// </summary>
+        /// <param name="dataType">Вид данных.</param>
+        /// <param name="isDownloaded">
+        /// Если true, то предоставит только ту версию, в которых данных были полностью загружены.
+        /// Если false, то предоставит просто последнию версию.</param>
+        Task<VersionInfo> GetLast(DataType dataType, bool isDownloaded = false);
 
         Task Add(VersionInfo versionInfo);
 

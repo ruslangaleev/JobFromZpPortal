@@ -9,7 +9,7 @@ namespace Job.Data.Repositories.Interfaces
     {
         Task<IEnumerable<Vacancy>> Get(Guid rubricId);
 
-        Task<IEnumerable<Vacancy>> Get(int limit = 25, int offset = 0);
+        Task<IEnumerable<Vacancy>> GetVacancies(Guid versionInfoId, int limit = 25, int offset = 0);
 
         Task AddRange(IEnumerable<Vacancy> vacancies);
 

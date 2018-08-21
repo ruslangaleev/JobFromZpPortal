@@ -3,6 +3,7 @@ using Job.Data.Models;
 using Job.Data.Repositories.Interfaces;
 using Job.Services.Clients.Interfaces;
 using Job.Services.Services.Interfaces;
+using Job.Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,9 @@ namespace Job.Services.Services.Logic
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
-        public async Task<IEnumerable<Vacancy>> GetVacancies()
+        public async Task<IEnumerable<Vacancy>> GetVacancies(Guid versionInfoId, int limit = 25, int offset = 0)
         {
-            return await _vacancyRepository.Get();
+            return await _vacancyRepository.GetVacancies(versionInfoId, limit, offset);
         }
 
         public async Task<IEnumerable<Vacancy>> GetVacancies(Guid rubricId)

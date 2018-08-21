@@ -9,6 +9,7 @@ namespace Job.Data.Models
     {
         public Guid VacancyId { get; set; }
 
+        [JsonIgnore]
         public Guid VersionId { get; set; }
         
         public string Salary { get; set; }

@@ -30,8 +30,20 @@ namespace Job.Data.Repositories.Logic
             throw new NotImplementedException();
         }
 
-        public async Task<VersionInfo> GetLast(DataType dataType)
+        /// <summary>
+        /// Возвращает последнюю версию обновлений.
+        /// </summary>
+        /// <param name="dataType">Вид данных.</param>
+        /// <param name="isDownloaded">
+        /// Если true, то предоставит только ту версию, в которых данных были полностью загружены.
+        /// Если false, то предоставит просто последнию версию.</param>
+        public async Task<VersionInfo> GetLast(DataType dataType, bool isDownloaded = false)
         {
+            if (isDownloaded)
+            {
+                return await _versions.LastOrDefaultAsync(t => t.DataType == dataType && t.IsDownloaded);
+            }
+
             return await _versions.LastOrDefaultAsync(t => t.DataType == dataType);
         }
 
